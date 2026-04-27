@@ -57,7 +57,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
       {/* Sidebar - Desktop */}
       <aside className="w-72 hidden lg:flex flex-col p-6 z-20">
-        <GlassCard className="h-full flex flex-col p-5 border-white/5 shadow-2xl rounded-[2.5rem]">
+        <GlassCard className="h-full flex flex-col p-5 rounded-[2.5rem]">
           <div className="mb-10 px-2">
             <Link href="/" className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20">
@@ -77,8 +77,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   className={cn(
                     "flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative",
                     isActive 
-                      ? "bg-primary text-primary-foreground shadow-xl shadow-primary/20" 
-                      : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                      ? "bg-primary text-primary-foreground shadow-[0_14px_30px_-18px_rgba(132,204,22,0.65)]" 
+                      : "text-muted-foreground hover:bg-card/85 hover:text-foreground"
                   )}
                 >
                   <item.icon className={cn("w-5 h-5 transition-colors", isActive ? "text-primary-foreground" : "group-hover:text-primary")} />
@@ -112,12 +112,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         {/* Topbar */}
         <header className={cn(
             "h-20 flex items-center justify-between px-6 lg:px-10 z-30 transition-all duration-300",
-            isScrolled ? "bg-background/80 backdrop-blur-xl border-b border-border" : ""
+            isScrolled ? "bg-background/72 backdrop-blur-md border-b border-border/80" : ""
         )}>
           <div className="flex items-center gap-4 lg:hidden">
              <button 
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="p-2.5 rounded-xl glass border-white/10"
+                className="p-2.5 rounded-xl glass"
              >
                 <Menu className="w-5 h-5" />
              </button>
@@ -144,7 +144,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 </Button>
             </div>
             <div className="h-8 w-px bg-border mx-1 hidden sm:block" />
-            <div className="flex items-center gap-3 glass py-1.5 pl-1.5 pr-4 rounded-2xl border-white/5 cursor-pointer hover:bg-white/10 transition-colors">
+            <div className="flex items-center gap-3 glass py-1.5 pl-1.5 pr-4 rounded-2xl cursor-pointer hover:bg-card/85 transition-colors">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-primary-foreground font-black text-xs shadow-lg">
                 SB
               </div>
@@ -184,11 +184,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="fixed inset-y-0 left-0 w-[280px] bg-background z-50 p-6 flex flex-col lg:hidden"
+                className="fixed inset-y-0 left-0 w-[280px] bg-background/96 backdrop-blur-md z-50 p-6 flex flex-col lg:hidden"
               >
                  <div className="flex items-center justify-between mb-10">
                     <span className="text-2xl font-black tracking-tighter">Zidup</span>
-                    <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded-xl glass border-white/10">
+                    <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded-xl glass">
                        <X className="w-5 h-5" />
                     </button>
                  </div>

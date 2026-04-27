@@ -15,12 +15,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button"
     
     const variants = {
-      primary: "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90 hover:scale-[1.02] hover:shadow-primary/30",
-      secondary: "bg-secondary text-secondary-foreground shadow-lg shadow-secondary/20 hover:bg-secondary/90 hover:scale-[1.02]",
-      outline: "border border-border bg-transparent hover:bg-muted text-foreground",
-      ghost: "bg-transparent hover:bg-muted text-muted-foreground hover:text-foreground",
-      glass: "glass text-foreground hover:bg-white/10 dark:hover:bg-white/5",
-      danger: "bg-red-500 text-white shadow-lg shadow-red-500/20 hover:bg-red-600 hover:scale-[1.02]",
+      primary: "bg-primary text-primary-foreground shadow-[0_16px_36px_-18px_rgba(132,204,22,0.65)] hover:bg-primary/90 hover:scale-[1.01] hover:shadow-[0_20px_42px_-20px_rgba(132,204,22,0.72)]",
+      secondary: "bg-secondary text-secondary-foreground shadow-[0_16px_36px_-18px_rgba(124,140,255,0.55)] hover:bg-secondary/90 hover:scale-[1.01]",
+      outline: "border border-border bg-card/80 hover:bg-muted/80 text-foreground shadow-sm",
+      ghost: "bg-transparent hover:bg-muted/80 text-muted-foreground hover:text-foreground",
+      glass: "glass text-foreground hover:bg-card/90",
+      danger: "bg-red-500 text-white shadow-[0_16px_36px_-18px_rgba(239,68,68,0.55)] hover:bg-red-600 hover:scale-[1.01]",
     }
 
     const sizes = {
@@ -34,7 +34,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp
         className={cn(
-          "inline-flex items-center justify-center rounded-2xl text-sm font-bold ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+          "inline-flex items-center justify-center rounded-2xl text-sm font-semibold ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
           variants[variant],
           sizes[size],
           className

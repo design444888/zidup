@@ -12,8 +12,8 @@ export function AuthLayout({ children, title, subtitle }: { children: React.Reac
       <div className="gradient-glow" />
       
       {/* Left side: Brand Message */}
-      <div className="hidden lg:flex flex-col justify-between p-16 relative overflow-hidden bg-primary/5">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/10 blur-[150px] rounded-full -translate-y-1/2 translate-x-1/3" />
+      <div className="hidden lg:flex flex-col justify-between p-16 relative overflow-hidden bg-card/35">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/8 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/3" />
         
         <div className="relative z-10">
           <Link href="/" className="flex items-center gap-3 mb-24">
@@ -39,7 +39,7 @@ export function AuthLayout({ children, title, subtitle }: { children: React.Reac
                 { text: "Detailed Growth Analytics", icon: CheckCircle2 },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-5 group">
-                  <div className="w-12 h-12 rounded-2xl glass border-white/10 flex items-center justify-center text-primary group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-lg">
+                  <div className="w-12 h-12 rounded-2xl glass flex items-center justify-center text-primary group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-lg">
                     <item.icon className="w-6 h-6" />
                   </div>
                   <span className="text-lg font-black tracking-tight">{item.text}</span>

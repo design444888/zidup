@@ -32,8 +32,8 @@ export function Navbar() {
     )}>
       <div className="max-w-7xl mx-auto">
         <div className={cn(
-          "glass flex items-center justify-between px-6 py-3 rounded-[2rem] transition-all duration-500 border-white/5 shadow-2xl",
-          isScrolled ? "bg-background/80 backdrop-blur-2xl border-white/10" : ""
+          "glass flex items-center justify-between px-6 py-3 rounded-[2rem] transition-all duration-500 shadow-[0_18px_42px_-26px_rgba(15,23,42,0.22)]",
+          isScrolled ? "bg-background/72 backdrop-blur-md" : ""
         )}>
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
@@ -71,7 +71,7 @@ export function Navbar() {
             {/* Mobile Toggle */}
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2.5 rounded-xl glass border-white/10"
+              className="md:hidden p-2.5 rounded-xl glass"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -88,7 +88,7 @@ export function Navbar() {
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             className="absolute top-28 left-6 right-6 z-40 lg:hidden"
           >
-            <GlassCard className="p-8 border-white/10 shadow-2xl rounded-[2.5rem] flex flex-col items-center gap-8">
+            <GlassCard className="p-8 rounded-[2.5rem] flex flex-col items-center gap-8">
               {navLinks.map((link) => (
                 <Link 
                   key={link.label} 
