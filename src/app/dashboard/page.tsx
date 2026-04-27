@@ -1,0 +1,233 @@
+"use client"
+
+import { DashboardLayout } from "@/components/layout/DashboardLayout"
+import { GlassCard } from "@/components/ui/GlassCard"
+import { DashboardWidget } from "@/components/ui/Cards"
+import { 
+  TrendingUp, 
+  Sparkles, 
+  CalendarDays, 
+  Megaphone, 
+  PenTool, 
+  BarChart3, 
+  Clock, 
+  Plus,
+  ArrowRight,
+  Zap,
+  Target,
+  Lightbulb
+} from "lucide-react"
+import { Button } from "@/components/ui/Button"
+import { motion } from "framer-motion"
+import { storageService } from "@/services/storageService"
+import { authService } from "@/services/authService"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { cn } from "@/lib/utils"
+
+export default function DashboardPage() {
+  const router = useRouter()
+  const [user, setUser] = useState<any>(null)
+  const [business, setBusiness] = useState<any>(null)
+
+  useEffect(() => {
+    if (!authService.isAuthenticated()) {
+      router.push("/login")
+      return
+    }
+    setUser(storageService.getUser())
+    setBusiness(storageService.getBusiness())
+  }, [router])
+
+  if (!user) return null
+
+  return (
+    <DashboardLayout>
+      <div className="mb-12">
+        <h1 className="heading-lg mb-2">My Dashboard</h1>
+        <p className="text-muted-foreground font-medium">
+          Welcome back, <span className="text-foreground font-black">{user.fullName}</span>. Growth is looking steady for <span className="text-primary font-black">{business?.businessName || "Your Business"}</span>.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        {/* Growth Score */}
+        <GlassCard className="p-8 border-white/5 bg-primary/5 group" glow>
+          <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition-opacity">
+             <TrendingUp className="w-16 h-16" />
+          </div>
+          <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-3">Growth Score</p>
+          <div className="flex items-end gap-2 mb-6">
+             <span className="text-6xl font-black tracking-tighter">78</span>
+             <span className="text-xl font-bold opacity-30 mb-2">/100</span>
+          </div>
+          <p className="text-xs font-bold leading-relaxed text-muted-foreground">
+             Your page has good potential. <span className="text-foreground">Improve consistency and captions.</span>
+          </p>
+        </GlassCard>
+
+        {/* Content Plan */}
+        <GlassCard className="p-8 border-white/5 hover:border-primary/20 transition-all group">
+           <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-6">Content Plan</p>
+           <div className="space-y-5">
+              {[
+                { label: "Generated", value: "12 posts", color: "bg-muted" },
+                { label: "Scheduled", value: "5 posts", color: "bg-primary/10 text-primary" },
+                { label: "Ideas ready", value: "3 campaign", color: "bg-muted" },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center justify-between">
+                   <span className="text-xs font-bold opacity-50 uppercase tracking-tight">{item.label}</span>
+                   <span className={cn("px-3 py-1 rounded-lg font-black text-xs", item.color)}>{item.value}</span>
+                </div>
+              ))}
+           </div>
+        </GlassCard>
+
+        {/* Campaign Summary */}
+        <GlassCard className="p-8 border-white/5 bg-secondary/5 group" glow>
+           <div className="flex items-center justify-between mb-6">
+              <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Active Campaign</p>
+              <span className="bg-background/80 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter">Draft</span>
+           </div>
+           <div className="flex items-center gap-4 mb-8">
+              <div className="p-3 rounded-2xl bg-secondary/10 text-secondary">
+                 <Target className="w-6 h-6" />
+              </div>
+              <div>
+                 <p className="text-lg font-black tracking-tighter">Messages</p>
+                 <p className="text-[10px] font-bold opacity-40 uppercase tracking-widest">Primary Objective</p>
+              </div>
+           </div>
+           <div className="grid grid-cols-2 gap-3">
+              <div className="bg-background/40 p-3 rounded-2xl border border-white/5">
+                 <p className="text-sm font-black">150 MAD</p>
+                 <p className="text-[8px] font-bold opacity-40 uppercase tracking-widest">Budget</p>
+              </div>
+              <div className="bg-background/40 p-3 rounded-2xl border border-white/5">
+                 <p className="text-sm font-black">6K-9K</p>
+                 <p className="text-[8px] font-bold opacity-40 uppercase tracking-widest">Reach</p>
+              </div>
+           </div>
+        </GlassCard>
+
+        {/* Best Time to Post */}
+        <GlassCard className="p-8 border-white/5 bg-yellow-500/5">
+           <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-8">Best Posting Time</p>
+           <div className="space-y-6">
+              {[
+                { time: "7:00 PM", day: "Today", icon: Clock },
+                { time: "12:30 PM", day: "Tomorrow", icon: Clock },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-4 group">
+                   <div className="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center text-yellow-500 group-hover:scale-110 transition-transform">
+                      <item.icon className="w-5 h-5" />
+                   </div>
+                   <div>
+                      <p className="text-sm font-black uppercase tracking-tighter">{item.time}</p>
+                      <p className="text-[10px] font-bold opacity-40 uppercase">{item.day}</p>
+                   </div>
+                </div>
+              ))}
+           </div>
+        </GlassCard>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="lg:col-span-2 space-y-10">
+           {/* Quick Actions */}
+           <DashboardWidget title="Quick Actions">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-4">
+                 {[
+                   { label: "Generate Caption", icon: PenTool, color: "bg-primary" },
+                   { label: "Create Campaign", icon: Megaphone, color: "bg-secondary" },
+                   { label: "Plan This Week", icon: CalendarDays, color: "bg-blue-500" },
+                   { label: "View Analytics", icon: BarChart3, color: "bg-orange-500" },
+                 ].map((action, i) => (
+                   <button key={i} className="flex flex-col items-center gap-4 group">
+                      <div className={`w-16 h-16 rounded-[2rem] ${action.color} text-white flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
+                         <action.icon className="w-7 h-7" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-[0.1em] opacity-60 group-hover:opacity-100 group-hover:text-primary transition-colors text-center">{action.label}</span>
+                   </button>
+                 ))}
+              </div>
+           </DashboardWidget>
+
+           {/* Recent Content Ideas */}
+           <DashboardWidget 
+              title="Recent Content Ideas" 
+              action={<Button variant="ghost" size="sm" className="font-black text-primary uppercase text-[10px] tracking-widest">View All</Button>}
+           >
+              <div className="space-y-4 pt-2">
+                 {[
+                   "5 benefits of your service",
+                   "Customer testimonial post",
+                   "Limited offer post",
+                   "Behind the scenes reel",
+                   "FAQ post",
+                 ].map((idea, i) => (
+                   <div key={i} className="flex items-center justify-between p-5 rounded-2xl glass border-white/5 hover:bg-white/5 transition-all cursor-pointer group">
+                      <div className="flex items-center gap-5">
+                         <div className="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_10px_rgba(132,204,22,0.5)]" />
+                         <span className="text-sm font-black tracking-tight">{idea}</span>
+                      </div>
+                      <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0">
+                         <span className="text-[10px] font-black uppercase tracking-widest text-primary">Use Idea</span>
+                         <Plus className="w-4 h-4 text-primary" />
+                      </div>
+                   </div>
+                 ))}
+              </div>
+           </DashboardWidget>
+        </div>
+
+        <div className="space-y-10">
+           {/* AI Recommendations */}
+           <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-6">
+                 <div className="p-2.5 rounded-2xl bg-primary/10 text-primary shadow-lg shadow-primary/10">
+                    <Zap className="w-6 h-6 fill-current" />
+                 </div>
+                 <h2 className="text-2xl font-black tracking-tighter">AI Recommendations</h2>
+              </div>
+              
+              <div className="space-y-4">
+                 {[
+                   { title: "Add more local keywords", desc: "Targeting your city specifically can increase reach by 25%.", icon: Lightbulb },
+                   { title: "Use stronger CTA", desc: "Posts with 'Book Now' perform better for your page type.", icon: Target },
+                   { title: "Post 4 times this week", desc: "Consistent posting is the key to organic growth.", icon: CalendarDays },
+                   { title: "Try a messages campaign", desc: "Your content is perfect for direct inquiries.", icon: Megaphone },
+                 ].map((rec, i) => (
+                   <motion.div
+                     key={i}
+                     initial={{ opacity: 0, x: 20 }}
+                     whileInView={{ opacity: 1, x: 0 }}
+                     viewport={{ once: true }}
+                     transition={{ delay: i * 0.1 }}
+                   >
+                     <GlassCard className="p-6 border-white/5 hover:border-primary/20 transition-all group cursor-pointer" interactive>
+                       <div className="flex gap-5">
+                          <div className="w-12 h-12 rounded-[1.25rem] bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-colors shrink-0">
+                             <rec.icon className="w-6 h-6 text-primary" />
+                          </div>
+                          <div className="flex-1">
+                             <h4 className="text-sm font-black tracking-tight mb-1 uppercase">{rec.title}</h4>
+                             <p className="text-xs text-muted-foreground font-medium leading-relaxed">{rec.desc}</p>
+                          </div>
+                          <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 self-center text-primary" />
+                       </div>
+                     </GlassCard>
+                   </motion.div>
+                 ))}
+              </div>
+
+              <Button className="w-full h-16 rounded-[2rem] font-black text-lg gap-3 shadow-2xl shadow-primary/30 group">
+                 Unlock Pro Strategy
+                 <Sparkles className="w-6 h-6 group-hover:animate-pulse" />
+              </Button>
+           </div>
+        </div>
+      </div>
+    </DashboardLayout>
+  )
+}
