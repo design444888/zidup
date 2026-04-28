@@ -1,39 +1,112 @@
 "use client"
 
 import * as React from "react"
+import type { ThemePreference } from "@/types/translation";
 
-type Theme = "light" | "dark"
+type ResolvedTheme = "light" | "dark";
 
 interface ThemeContextType {
-  theme: Theme
+  isReady: boolean
+  themePreference: ThemePreference
+  resolvedTheme: ResolvedTheme
+  setThemePreference: (theme: ThemePreference) => void
   toggleTheme: () => void
 }
 
 const ThemeContext = React.createContext<ThemeContextType | undefined>(undefined)
+const STORAGE_KEY = "arabeng-theme"
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = React.useState<Theme>("light")
+  const [isReady, setIsReady] = React.useState(false)
+  const [themePreference, setThemePreferenceState] =
+    React.useState<ThemePreference>("system")
+  const [resolvedTheme, setResolvedTheme] = React.useState<ResolvedTheme>("light")
 
   React.useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as Theme
-    if (savedTheme) {
-      setTheme(savedTheme)
-      document.documentElement.classList.toggle("dark", savedTheme === "dark")
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark")
-      document.documentElement.classList.add("dark")
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    const savedTheme = localStorage.getItem(STORAGE_KEY)
+
+    if (savedTheme === "light" || savedTheme === "dark" || savedTheme === "system") {
+      setThemePreferenceState(savedTheme)
+    }
+
+    const nextResolvedTheme =
+      savedTheme === "dark" ||
+      (savedTheme !== "light" && mediaQuery.matches)
+        ? "dark"
+        : "light"
+
+    setResolvedTheme(nextResolvedTheme)
+    document.documentElement.classList.toggle("dark", nextResolvedTheme === "dark")
+    document.documentElement.style.colorScheme = nextResolvedTheme
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      setResolvedTheme((current) => {
+        const nextTheme =
+          themePreference === "system"
+            ? event.matches
+              ? "dark"
+              : "light"
+            : current
+
+        document.documentElement.classList.toggle("dark", nextTheme === "dark")
+        document.documentElement.style.colorScheme = nextTheme
+
+        return nextTheme
+      })
+    }
+
+    mediaQuery.addEventListener("change", handleChange)
+    setIsReady(true)
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange)
     }
   }, [])
 
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light"
-    setTheme(newTheme)
-    localStorage.setItem("theme", newTheme)
-    document.documentElement.classList.toggle("dark", newTheme === "dark")
-  }
+  React.useEffect(() => {
+    if (!isReady) {
+      return
+    }
+
+    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+    const nextResolvedTheme =
+      themePreference === "system"
+        ? systemDark
+          ? "dark"
+          : "light"
+        : themePreference
+
+    setResolvedTheme(nextResolvedTheme)
+    localStorage.setItem(STORAGE_KEY, themePreference)
+    document.documentElement.classList.toggle("dark", nextResolvedTheme === "dark")
+    document.documentElement.style.colorScheme = nextResolvedTheme
+  }, [isReady, themePreference])
+
+  const setThemePreference = React.useCallback((theme: ThemePreference) => {
+    setThemePreferenceState(theme)
+  }, [])
+
+  const toggleTheme = React.useCallback(() => {
+    setThemePreferenceState((current) => {
+      if (current === "system") {
+        return resolvedTheme === "dark" ? "light" : "dark"
+      }
+
+      return current === "light" ? "dark" : "light"
+    })
+  }, [resolvedTheme])
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider
+      value={{
+        isReady,
+        themePreference,
+        resolvedTheme,
+        setThemePreference,
+        toggleTheme,
+      }}
+    >
       <div className="gradient-glow" />
       {children}
     </ThemeContext.Provider>
