@@ -144,6 +144,15 @@ export const storageService = {
     return data ? JSON.parse(data) : null
   },
 
+  updateSettings: (partialSettings: Record<string, unknown>) => {
+    if (!isBrowser()) return
+    const currentSettings = storageService.getSettings() || {}
+    localStorage.setItem(
+      KEYS.SETTINGS,
+      JSON.stringify({ ...currentSettings, ...partialSettings })
+    )
+  },
+
   // Theme
   saveTheme: (theme: string) => {
     if (!isBrowser()) return

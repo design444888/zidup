@@ -3,6 +3,7 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout"
 import { GlassCard } from "@/components/ui/GlassCard"
 import { Button } from "@/components/ui/Button"
+import { Modal } from "@/components/ui/Modal"
 import { 
   User, 
   Building2, 
@@ -19,30 +20,134 @@ import {
   Mail,
   MapPin,
   Globe,
-  Bell
+  Bell,
+  CheckCircle2,
+  Link2,
+  Unplug
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { storageService } from "@/services/storageService"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
+type ConnectionKey = "facebookPage" | "instagramAccount" | "metaAdAccount"
+
+interface DemoConnection {
+  connected: boolean
+  accountName: string
+}
+
+type DemoConnections = Record<ConnectionKey, DemoConnection>
+
+const defaultConnections: DemoConnections = {
+  facebookPage: { connected: false, accountName: "" },
+  instagramAccount: { connected: false, accountName: "" },
+  metaAdAccount: { connected: false, accountName: "" },
+}
+
+const connectionCards: Array<{
+  key: ConnectionKey
+  label: string
+  icon: typeof MessageCircle
+  color: string
+  desc: string
+  demoAccountName: string
+}> = [
+  {
+    key: "facebookPage",
+    label: "Facebook Page",
+    icon: MessageCircle,
+    color: "text-blue-500",
+    desc: "Sync posts & metrics",
+    demoAccountName: "Atlas Cafe",
+  },
+  {
+    key: "instagramAccount",
+    label: "Instagram Account",
+    icon: Camera,
+    color: "text-pink-500",
+    desc: "Direct posting & Reels",
+    demoAccountName: "@atlascafe.ma",
+  },
+  {
+    key: "metaAdAccount",
+    label: "Meta Ad Account",
+    icon: Target,
+    color: "text-primary",
+    desc: "Campaign management",
+    demoAccountName: "Demo Ad Account",
+  },
+]
+
 export default function SettingsPage() {
   const [user, setUser] = useState<any>(null)
   const [business, setBusiness] = useState<any>(null)
   const [activeTab, setActiveTab] = useState("profile")
+  const [connections, setConnections] = useState<DemoConnections>(defaultConnections)
+  const [selectedConnectionKey, setSelectedConnectionKey] = useState<ConnectionKey | null>(null)
 
   useEffect(() => {
     setUser(storageService.getUser() || {})
     setBusiness(storageService.getBusiness() || {})
+
+    const savedSettings = storageService.getSettings() || {}
+    const savedConnections = savedSettings.demoConnections as Partial<DemoConnections> | undefined
+
+    if (savedConnections) {
+      setConnections({
+        facebookPage: savedConnections.facebookPage || defaultConnections.facebookPage,
+        instagramAccount:
+          savedConnections.instagramAccount || defaultConnections.instagramAccount,
+        metaAdAccount: savedConnections.metaAdAccount || defaultConnections.metaAdAccount,
+      })
+    }
   }, [])
 
-  const handleConnect = () => {
-    alert("Coming soon: Meta API integration")
+  const selectedConnection = selectedConnectionKey
+    ? connectionCards.find((connection) => connection.key === selectedConnectionKey) || null
+    : null
+
+  const handleOpenConnectionModal = (connectionKey: ConnectionKey) => {
+    setSelectedConnectionKey(connectionKey)
+  }
+
+  const handleCloseConnectionModal = () => {
+    setSelectedConnectionKey(null)
+  }
+
+  const handleConnectDemoAccount = () => {
+    if (!selectedConnection) return
+
+    const nextConnections = {
+      ...connections,
+      [selectedConnection.key]: {
+        connected: true,
+        accountName: selectedConnection.demoAccountName,
+      },
+    }
+
+    setConnections(nextConnections)
+    storageService.updateSettings({ demoConnections: nextConnections })
+    handleCloseConnectionModal()
+  }
+
+  const handleDisconnect = (connectionKey: ConnectionKey) => {
+    const nextConnections = {
+      ...connections,
+      [connectionKey]: {
+        connected: false,
+        accountName: "",
+      },
+    }
+
+    setConnections(nextConnections)
+    storageService.updateSettings({ demoConnections: nextConnections })
   }
 
   const handleSave = () => {
     storageService.saveUser(user)
     storageService.saveBusiness(business)
+    storageService.updateSettings({ demoConnections: connections })
     alert("Settings saved successfully!")
   }
 
@@ -241,22 +346,67 @@ export default function SettingsPage() {
               className="space-y-8"
             >
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {[
-                    { label: "Facebook Page", icon: MessageCircle, color: "text-blue-500", desc: "Sync posts & metrics" },
-                    { label: "Instagram Account", icon: Camera, color: "text-pink-500", desc: "Direct posting & Reels" },
-                    { label: "Meta Ad Account", icon: Target, color: "text-primary", desc: "Campaign management" },
-                  ].map((acc, i) => (
-                    <GlassCard key={i} className="p-8 border-white/5 hover:border-primary/20 transition-all flex flex-col items-center text-center group" interactive>
+                  {connectionCards.map((acc) => {
+                    const connectionState = connections[acc.key]
+                    const isConnected = connectionState.connected
+
+                    return (
+                    <GlassCard key={acc.key} className="p-8 border-white/5 hover:border-primary/20 transition-all flex flex-col items-center text-center group" interactive>
                        <div className={cn("w-16 h-16 rounded-[2rem] bg-muted flex items-center justify-center group-hover:scale-110 transition-all duration-500 mb-6", acc.color)}>
                           <acc.icon className="w-8 h-8" />
                        </div>
                        <div>
-                          <p className="font-black text-lg tracking-tighter uppercase mb-1">{acc.label}</p>
+                          <div className="mb-2 flex items-center justify-center gap-2">
+                            <p className="font-black text-lg tracking-tighter uppercase">{acc.label}</p>
+                            {isConnected ? (
+                              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/12 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.16em] text-emerald-400 shadow-[0_10px_24px_-18px_rgba(16,185,129,0.55)]">
+                                <CheckCircle2 className="h-3 w-3" />
+                                Connected
+                              </span>
+                            ) : null}
+                          </div>
                           <p className="text-[9px] font-black uppercase tracking-widest opacity-30 mb-8">{acc.desc}</p>
+                          <div className="mb-6 min-h-12 rounded-[1.5rem] border border-white/5 bg-background/40 px-4 py-3">
+                            <p className="text-[9px] font-black uppercase tracking-[0.18em] opacity-40">
+                              Status
+                            </p>
+                            <p className="mt-2 text-sm font-bold tracking-tight text-foreground">
+                              {isConnected ? connectionState.accountName : "Not Connected"}
+                            </p>
+                          </div>
                        </div>
-                       <Button variant="outline" className="w-full h-12 rounded-xl font-black text-[10px] uppercase tracking-widest border-white/5" onClick={handleConnect}>Connect Now</Button>
+                       <div className="mt-auto flex w-full flex-col gap-3">
+                         <Button
+                           variant={isConnected ? "secondary" : "outline"}
+                           className="h-12 w-full rounded-xl font-black text-[10px] uppercase tracking-widest border-white/5"
+                           onClick={() => {
+                             if (!isConnected) {
+                               handleOpenConnectionModal(acc.key)
+                             }
+                           }}
+                           aria-label={
+                             isConnected
+                               ? `${acc.label} connected`
+                               : `Connect demo ${acc.label}`
+                           }
+                         >
+                           <Link2 className="mr-2 h-4 w-4" />
+                           {isConnected ? "Connected" : "Connect Now"}
+                         </Button>
+                         {isConnected ? (
+                           <Button
+                             variant="ghost"
+                             className="h-11 w-full rounded-xl font-black text-[10px] uppercase tracking-widest text-muted-foreground hover:text-red-400"
+                             onClick={() => handleDisconnect(acc.key)}
+                             aria-label={`Disconnect ${acc.label}`}
+                           >
+                             <Unplug className="mr-2 h-4 w-4" />
+                             Disconnect
+                           </Button>
+                         ) : null}
+                       </div>
                     </GlassCard>
-                  ))}
+                  )})}
                </div>
             </motion.section>
           )}
@@ -314,6 +464,38 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={Boolean(selectedConnection)}
+        onClose={handleCloseConnectionModal}
+        title={selectedConnection ? `Connect ${selectedConnection.label}` : undefined}
+        className="max-w-xl"
+      >
+        <div className="space-y-8">
+          <div className="rounded-[2rem] border border-primary/15 bg-primary/6 p-6">
+            <p className="text-base font-semibold leading-8 text-foreground">
+              Real Meta API integration will be added later. For now, you can
+              connect a demo account to preview the Zidup experience.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <Button
+              variant="outline"
+              className="h-12 rounded-2xl px-6 font-black text-[10px] uppercase tracking-[0.16em]"
+              onClick={handleCloseConnectionModal}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="h-12 rounded-2xl px-6 font-black text-[10px] uppercase tracking-[0.16em]"
+              onClick={handleConnectDemoAccount}
+            >
+              Connect Demo Account
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </DashboardLayout>
   )
 }
