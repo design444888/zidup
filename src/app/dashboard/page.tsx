@@ -18,9 +18,7 @@ import {
   Target,
   Lightbulb,
   Languages,
-  History,
-  Settings2,
-  Clipboard
+  Settings2
 } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { motion } from "framer-motion"
@@ -31,7 +29,7 @@ import { cn } from "@/lib/utils"
 import { useAppState } from "@/components/AppStateProvider"
 
 export default function DashboardPage() {
-  const { clearHistory, history, isReady, pushToast } = useAppState()
+  const { history } = useAppState()
   const [user, setUser] = useState<any>(null)
   const [business, setBusiness] = useState<any>(null)
 
@@ -77,6 +75,16 @@ export default function DashboardPage() {
           <p className="text-xs font-bold leading-relaxed text-muted-foreground">
              Your page has good potential. <span className="text-foreground">Improve consistency and captions.</span>
           </p>
+          <Button
+            asChild
+            variant="glass"
+            size="sm"
+            className="mt-6 w-full rounded-2xl border-primary/20 bg-primary/10 font-black uppercase tracking-[0.12em] text-primary hover:border-primary/35 hover:bg-primary/16 hover:shadow-[0_18px_36px_-24px_rgba(132,204,22,0.65)] focus-visible:ring-primary/40"
+          >
+            <Link href="/dashboard/analytics" aria-label="Improve growth score from analytics">
+              Improve Score
+            </Link>
+          </Button>
         </GlassCard>
 
         {/* Content Plan */}
@@ -94,6 +102,16 @@ export default function DashboardPage() {
                 </div>
               ))}
            </div>
+           <Button
+             asChild
+             variant="glass"
+             size="sm"
+             className="mt-6 w-full rounded-2xl border-primary/20 bg-primary/10 font-black uppercase tracking-[0.12em] text-primary hover:border-primary/35 hover:bg-primary/16 hover:shadow-[0_18px_36px_-24px_rgba(132,204,22,0.65)] focus-visible:ring-primary/40"
+           >
+             <Link href="/dashboard/calendar" aria-label="Open content planner">
+               Open Planner
+             </Link>
+           </Button>
         </GlassCard>
 
         {/* Campaign Summary */}
@@ -121,6 +139,16 @@ export default function DashboardPage() {
                  <p className="text-[8px] font-bold opacity-40 uppercase tracking-widest">Reach</p>
               </div>
            </div>
+           <Button
+             asChild
+             variant="glass"
+             size="sm"
+             className="mt-6 w-full rounded-2xl border-primary/20 bg-primary/10 font-black uppercase tracking-[0.12em] text-primary hover:border-primary/35 hover:bg-primary/16 hover:shadow-[0_18px_36px_-24px_rgba(132,204,22,0.65)] focus-visible:ring-primary/40"
+           >
+             <Link href="/dashboard/campaigns" aria-label="Edit active campaign">
+               Edit Campaign
+             </Link>
+           </Button>
         </GlassCard>
 
         {/* Best Time to Post */}
@@ -142,6 +170,16 @@ export default function DashboardPage() {
                 </div>
               ))}
            </div>
+           <Button
+             asChild
+             variant="glass"
+             size="sm"
+             className="mt-6 w-full rounded-2xl border-primary/20 bg-primary/10 font-black uppercase tracking-[0.12em] text-primary hover:border-primary/35 hover:bg-primary/16 hover:shadow-[0_18px_36px_-24px_rgba(132,204,22,0.65)] focus-visible:ring-primary/40"
+           >
+             <Link href="/dashboard/calendar" aria-label="Schedule a post for the best posting time">
+               Schedule Post
+             </Link>
+           </Button>
         </GlassCard>
       </div>
 
@@ -150,36 +188,51 @@ export default function DashboardPage() {
            {/* Quick Actions */}
            <DashboardWidget title="Quick Actions">
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 pt-4">
-                 <Button asChild className="justify-start rounded-[1.5rem] px-5">
-                    <Link href="/translate">
-                      <Languages className="mr-2 h-4 w-4" />
-                      New Translation
-                    </Link>
-                 </Button>
-                 <Button asChild variant="secondary" className="justify-start rounded-[1.5rem] px-5">
-                    <Link href="/history">
-                      <History className="mr-2 h-4 w-4" />
-                      View History
-                    </Link>
-                 </Button>
-                 <Button
-                   variant="outline"
-                   className="justify-start rounded-[1.5rem] px-5"
-                   disabled={!isReady || history.length === 0}
-                   onClick={() => {
-                     clearHistory()
-                     pushToast("Translation history cleared.")
-                   }}
-                 >
-                    <Clipboard className="mr-2 h-4 w-4" />
-                    Clear History
-                 </Button>
-                 <Button asChild variant="outline" className="justify-start rounded-[1.5rem] px-5">
-                    <Link href="/settings">
-                      <Settings2 className="mr-2 h-4 w-4" />
-                      Go to Settings
-                    </Link>
-                 </Button>
+                 {[
+                   {
+                     label: "Generate Caption",
+                     href: "/dashboard/content",
+                     icon: PenTool,
+                     color: "bg-primary text-primary-foreground shadow-[0_20px_40px_-20px_rgba(132,204,22,0.7)]",
+                   },
+                   {
+                     label: "Create Campaign",
+                     href: "/dashboard/campaigns",
+                     icon: Megaphone,
+                     color: "bg-secondary text-secondary-foreground shadow-[0_20px_40px_-20px_rgba(124,140,255,0.65)]",
+                   },
+                   {
+                     label: "Plan This Week",
+                     href: "/dashboard/calendar",
+                     icon: CalendarDays,
+                     color: "bg-blue-500 text-white shadow-[0_20px_40px_-20px_rgba(59,130,246,0.65)]",
+                   },
+                   {
+                     label: "View Analytics",
+                     href: "/dashboard/analytics",
+                     icon: BarChart3,
+                     color: "bg-orange-500 text-white shadow-[0_20px_40px_-20px_rgba(249,115,22,0.65)]",
+                   },
+                 ].map((action) => (
+                   <Link
+                     key={action.href}
+                     href={action.href}
+                     aria-label={action.label}
+                     className="group flex min-h-[140px] flex-col items-center justify-center gap-4 rounded-[2rem] border border-white/6 bg-background/35 px-5 py-6 text-center transition-all duration-300 hover:scale-[1.02] hover:border-primary/30 hover:bg-primary/6 hover:shadow-[0_24px_55px_-28px_rgba(132,204,22,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
+                   >
+                     <div
+                       className={cn(
+                         "flex h-16 w-16 items-center justify-center rounded-[2rem] transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-1 group-hover:shadow-[0_24px_48px_-22px_rgba(132,204,22,0.45)]",
+                         action.color,
+                       )}
+                     >
+                       <action.icon className="w-7 h-7" />
+                     </div>
+                     <span className="text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground transition-colors group-hover:text-primary">
+                       {action.label}
+                     </span>
+                   </Link>
+                 ))}
               </div>
            </DashboardWidget>
 
