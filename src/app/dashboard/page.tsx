@@ -28,6 +28,9 @@ import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 import { useAppState } from "@/components/AppStateProvider"
 
+const dashboardCardCtaClassName =
+  "relative z-20 mt-6 w-full rounded-2xl border border-primary/30 bg-primary text-primary-foreground font-black uppercase tracking-[0.12em] shadow-[0_18px_38px_-18px_rgba(132,204,22,0.68)] hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/90 hover:shadow-[0_24px_48px_-20px_rgba(132,204,22,0.75)] focus-visible:ring-primary/45 focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
+
 export default function DashboardPage() {
   const { history } = useAppState()
   const [user, setUser] = useState<any>(null)
@@ -77,9 +80,9 @@ export default function DashboardPage() {
           </p>
           <Button
             asChild
-            variant="glass"
+            variant="primary"
             size="sm"
-            className="mt-6 w-full rounded-2xl border-primary/20 bg-primary/10 font-black uppercase tracking-[0.12em] text-primary hover:border-primary/35 hover:bg-primary/16 hover:shadow-[0_18px_36px_-24px_rgba(132,204,22,0.65)] focus-visible:ring-primary/40"
+            className={dashboardCardCtaClassName}
           >
             <Link href="/dashboard/analytics" aria-label="Improve growth score from analytics">
               Improve Score
@@ -104,9 +107,9 @@ export default function DashboardPage() {
            </div>
            <Button
              asChild
-             variant="glass"
+             variant="primary"
              size="sm"
-             className="mt-6 w-full rounded-2xl border-primary/20 bg-primary/10 font-black uppercase tracking-[0.12em] text-primary hover:border-primary/35 hover:bg-primary/16 hover:shadow-[0_18px_36px_-24px_rgba(132,204,22,0.65)] focus-visible:ring-primary/40"
+             className={dashboardCardCtaClassName}
            >
              <Link href="/dashboard/calendar" aria-label="Open content planner">
                Open Planner
@@ -141,9 +144,9 @@ export default function DashboardPage() {
            </div>
            <Button
              asChild
-             variant="glass"
+             variant="primary"
              size="sm"
-             className="mt-6 w-full rounded-2xl border-primary/20 bg-primary/10 font-black uppercase tracking-[0.12em] text-primary hover:border-primary/35 hover:bg-primary/16 hover:shadow-[0_18px_36px_-24px_rgba(132,204,22,0.65)] focus-visible:ring-primary/40"
+             className={dashboardCardCtaClassName}
            >
              <Link href="/dashboard/campaigns" aria-label="Edit active campaign">
                Edit Campaign
@@ -172,9 +175,9 @@ export default function DashboardPage() {
            </div>
            <Button
              asChild
-             variant="glass"
+             variant="primary"
              size="sm"
-             className="mt-6 w-full rounded-2xl border-primary/20 bg-primary/10 font-black uppercase tracking-[0.12em] text-primary hover:border-primary/35 hover:bg-primary/16 hover:shadow-[0_18px_36px_-24px_rgba(132,204,22,0.65)] focus-visible:ring-primary/40"
+             className={dashboardCardCtaClassName}
            >
              <Link href="/dashboard/calendar" aria-label="Schedule a post for the best posting time">
                Schedule Post
@@ -218,7 +221,7 @@ export default function DashboardPage() {
                      key={action.href}
                      href={action.href}
                      aria-label={action.label}
-                     className="group flex min-h-[140px] flex-col items-center justify-center gap-4 rounded-[2rem] border border-white/6 bg-background/35 px-5 py-6 text-center transition-all duration-300 hover:scale-[1.02] hover:border-primary/30 hover:bg-primary/6 hover:shadow-[0_24px_55px_-28px_rgba(132,204,22,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
+                     className="group relative z-10 flex min-h-[140px] flex-col items-center justify-center gap-4 rounded-[2rem] border border-primary/15 bg-background/45 px-5 py-6 text-center shadow-[0_18px_42px_-26px_rgba(15,23,42,0.35)] transition-all duration-300 hover:scale-[1.02] hover:border-primary/35 hover:bg-primary/8 hover:shadow-[0_24px_55px_-28px_rgba(132,204,22,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
                    >
                      <div
                        className={cn(
@@ -228,8 +231,11 @@ export default function DashboardPage() {
                      >
                        <action.icon className="w-7 h-7" />
                      </div>
-                     <span className="text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground transition-colors group-hover:text-primary">
+                     <span className="text-[10px] font-black uppercase tracking-[0.16em] text-foreground/80 transition-colors group-hover:text-primary">
                        {action.label}
+                     </span>
+                     <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary/75 transition-colors group-hover:text-primary">
+                       Open
                      </span>
                    </Link>
                  ))}
@@ -256,7 +262,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="mt-6">
-                  <Button asChild size="lg" className="rounded-[1.5rem]">
+                  <Button asChild size="lg" className="relative z-20 rounded-[1.5rem] bg-primary text-primary-foreground shadow-[0_18px_38px_-18px_rgba(132,204,22,0.68)] hover:bg-primary/90 focus-visible:ring-primary/45">
                     <Link href="/translate">Create first translation</Link>
                   </Button>
                 </div>
@@ -270,7 +276,7 @@ export default function DashboardPage() {
                 <p className="mt-2 text-sm text-muted-foreground leading-7">
                   Stored translations available locally in this browser.
                 </p>
-                <Button asChild variant="secondary" className="mt-6 rounded-[1.5rem] w-full">
+                <Button asChild variant="primary" className="relative z-20 mt-6 w-full rounded-[1.5rem] bg-primary text-primary-foreground shadow-[0_18px_38px_-18px_rgba(132,204,22,0.68)] hover:bg-primary/90 focus-visible:ring-primary/45">
                   <Link href="/history">Open history</Link>
                 </Button>
               </GlassCard>
@@ -359,7 +365,7 @@ export default function DashboardPage() {
                   </div>
                   <Settings2 className="w-5 h-5 text-primary shrink-0" />
                 </div>
-                <Button asChild variant="outline" className="mt-5 w-full rounded-[1.5rem]">
+                <Button asChild variant="primary" className="relative z-20 mt-5 w-full rounded-[1.5rem] bg-primary text-primary-foreground shadow-[0_18px_38px_-18px_rgba(132,204,22,0.68)] hover:bg-primary/90 focus-visible:ring-primary/45">
                   <Link href="/settings">Manage settings</Link>
                 </Button>
               </GlassCard>
