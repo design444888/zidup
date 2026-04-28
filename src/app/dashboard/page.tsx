@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { DashboardLayout } from "@/components/layout/DashboardLayout"
 import { GlassCard } from "@/components/ui/GlassCard"
 import { DashboardWidget } from "@/components/ui/Cards"
@@ -15,29 +16,41 @@ import {
   ArrowRight,
   Zap,
   Target,
-  Lightbulb
+  Lightbulb,
+  Languages,
+  History,
+  Settings2,
+  Clipboard
 } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { motion } from "framer-motion"
 import { storageService } from "@/services/storageService"
 import { authService } from "@/services/authService"
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { useAppState } from "@/components/AppStateProvider"
 
 export default function DashboardPage() {
-  const router = useRouter()
+  const { clearHistory, history, isReady, pushToast } = useAppState()
   const [user, setUser] = useState<any>(null)
   const [business, setBusiness] = useState<any>(null)
 
   useEffect(() => {
-    if (!authService.isAuthenticated()) {
-      router.push("/login")
-      return
-    }
-    setUser(storageService.getUser())
-    setBusiness(storageService.getBusiness())
-  }, [router])
+    const savedUser = authService.isAuthenticated()
+      ? storageService.getUser()
+      : {
+          fullName: "Guest User",
+          email: "guest@arabeng.app",
+          businessName: "ArabEng Workspace",
+        }
+    const savedBusiness =
+      storageService.getBusiness() ?? {
+        businessName: "ArabEng Workspace",
+      }
+
+    setUser(savedUser)
+    setBusiness(savedBusiness)
+  }, [])
 
   if (!user) return null
 
@@ -136,22 +149,79 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 space-y-10">
            {/* Quick Actions */}
            <DashboardWidget title="Quick Actions">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-4">
-                 {[
-                   { label: "Generate Caption", icon: PenTool, color: "bg-primary" },
-                   { label: "Create Campaign", icon: Megaphone, color: "bg-secondary" },
-                   { label: "Plan This Week", icon: CalendarDays, color: "bg-blue-500" },
-                   { label: "View Analytics", icon: BarChart3, color: "bg-orange-500" },
-                 ].map((action, i) => (
-                   <button key={i} className="flex flex-col items-center gap-4 group">
-                      <div className={`w-16 h-16 rounded-[2rem] ${action.color} text-white flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
-                         <action.icon className="w-7 h-7" />
-                      </div>
-                      <span className="text-[10px] font-black uppercase tracking-[0.1em] opacity-60 group-hover:opacity-100 group-hover:text-primary transition-colors text-center">{action.label}</span>
-                   </button>
-                 ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 pt-4">
+                 <Button asChild className="justify-start rounded-[1.5rem] px-5">
+                    <Link href="/translate">
+                      <Languages className="mr-2 h-4 w-4" />
+                      New Translation
+                    </Link>
+                 </Button>
+                 <Button asChild variant="secondary" className="justify-start rounded-[1.5rem] px-5">
+                    <Link href="/history">
+                      <History className="mr-2 h-4 w-4" />
+                      View History
+                    </Link>
+                 </Button>
+                 <Button
+                   variant="outline"
+                   className="justify-start rounded-[1.5rem] px-5"
+                   disabled={!isReady || history.length === 0}
+                   onClick={() => {
+                     clearHistory()
+                     pushToast("Translation history cleared.")
+                   }}
+                 >
+                    <Clipboard className="mr-2 h-4 w-4" />
+                    Clear History
+                 </Button>
+                 <Button asChild variant="outline" className="justify-start rounded-[1.5rem] px-5">
+                    <Link href="/settings">
+                      <Settings2 className="mr-2 h-4 w-4" />
+                      Go to Settings
+                    </Link>
+                 </Button>
               </div>
            </DashboardWidget>
+
+           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+              <GlassCard className="p-8 border-white/5 xl:col-span-2">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-3">
+                      Translation Workspace
+                    </p>
+                    <h3 className="text-2xl font-black tracking-tighter mb-3">
+                      Ready for your next Arabic or English translation
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-7 max-w-2xl">
+                      Start a fresh translation, keep your recent results organized, and move
+                      between translation, history, and settings from one place.
+                    </p>
+                  </div>
+                  <div className="hidden sm:flex h-14 w-14 items-center justify-center rounded-[1.5rem] bg-primary/10 text-primary">
+                    <Languages className="w-7 h-7" />
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <Button asChild size="lg" className="rounded-[1.5rem]">
+                    <Link href="/translate">Create first translation</Link>
+                  </Button>
+                </div>
+              </GlassCard>
+
+              <GlassCard className="p-8 border-white/5">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-3">
+                  Saved History
+                </p>
+                <p className="text-4xl font-black tracking-tighter">{history.length}</p>
+                <p className="mt-2 text-sm text-muted-foreground leading-7">
+                  Stored translations available locally in this browser.
+                </p>
+                <Button asChild variant="secondary" className="mt-6 rounded-[1.5rem] w-full">
+                  <Link href="/history">Open history</Link>
+                </Button>
+              </GlassCard>
+           </div>
 
            {/* Recent Content Ideas */}
            <DashboardWidget 
@@ -216,10 +286,30 @@ export default function DashboardPage() {
                           </div>
                           <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 self-center text-primary" />
                        </div>
-                     </GlassCard>
+                    </GlassCard>
                    </motion.div>
                  ))}
               </div>
+
+              <GlassCard className="p-6 border-white/5 bg-background/55">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">
+                      Settings
+                    </p>
+                    <h3 className="mt-2 text-lg font-black tracking-tight">
+                      Theme, defaults, and local history
+                    </h3>
+                    <p className="mt-2 text-xs text-muted-foreground leading-6">
+                      Update your default translation direction and theme preferences.
+                    </p>
+                  </div>
+                  <Settings2 className="w-5 h-5 text-primary shrink-0" />
+                </div>
+                <Button asChild variant="outline" className="mt-5 w-full rounded-[1.5rem]">
+                  <Link href="/settings">Manage settings</Link>
+                </Button>
+              </GlassCard>
 
               <Button className="w-full h-16 rounded-[2rem] font-black text-lg gap-3 shadow-2xl shadow-primary/30 group">
                  Unlock Pro Strategy

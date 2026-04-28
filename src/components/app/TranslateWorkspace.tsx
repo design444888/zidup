@@ -223,14 +223,16 @@ export function TranslateWorkspace() {
               onChange={(value) => setSourceLanguage(value as LanguageCode)}
             />
             <div className="flex items-end justify-center">
-              <button
+              <Button
                 type="button"
+                variant="secondary"
                 onClick={handleSwap}
-                className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border/70 bg-background/80 transition-colors hover:border-primary/30 hover:text-primary"
+                className="h-12 gap-2 rounded-2xl px-4"
                 aria-label="Swap languages"
               >
                 <ArrowRightLeft className="h-4 w-4" />
-              </button>
+                <span className="hidden sm:inline">Swap languages</span>
+              </Button>
             </div>
             <SelectField
               label="To"

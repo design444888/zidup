@@ -15,10 +15,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button"
     
     const variants = {
-      primary: "bg-primary text-primary-foreground shadow-[0_16px_36px_-18px_rgba(132,204,22,0.65)] hover:bg-primary/90 hover:scale-[1.01] hover:shadow-[0_20px_42px_-20px_rgba(132,204,22,0.72)]",
-      secondary: "bg-secondary text-secondary-foreground shadow-[0_16px_36px_-18px_rgba(124,140,255,0.55)] hover:bg-secondary/90 hover:scale-[1.01]",
-      outline: "border border-border bg-card/80 hover:bg-muted/80 text-foreground shadow-sm",
-      ghost: "bg-transparent hover:bg-muted/80 text-muted-foreground hover:text-foreground",
+      primary: "bg-primary text-primary-foreground shadow-[0_18px_40px_-20px_rgba(14,165,233,0.72)] hover:bg-sky-500 hover:shadow-[0_22px_46px_-22px_rgba(14,165,233,0.78)]",
+      secondary: "bg-sky-100 text-sky-950 shadow-[0_16px_36px_-22px_rgba(14,165,233,0.45)] hover:bg-sky-200 dark:bg-sky-500/18 dark:text-sky-100 dark:hover:bg-sky-500/28",
+      outline: "border border-border bg-background/86 text-foreground shadow-[0_12px_28px_-20px_rgba(6,18,33,0.28)] hover:border-primary/30 hover:bg-muted/88",
+      ghost: "bg-transparent text-foreground hover:bg-muted/82 hover:text-foreground",
       glass: "glass text-foreground hover:bg-card/90",
       danger: "bg-red-500 text-white shadow-[0_16px_36px_-18px_rgba(239,68,68,0.55)] hover:bg-red-600 hover:scale-[1.01]",
     }
@@ -34,7 +34,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp
         className={cn(
-          "inline-flex items-center justify-center rounded-2xl text-sm font-semibold ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+          "inline-flex items-center justify-center rounded-2xl text-sm font-semibold ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-55 active:translate-y-0 active:scale-[0.98]",
           variants[variant],
           sizes[size],
           className

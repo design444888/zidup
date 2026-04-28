@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowRight, Copy, Languages, PanelTop } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 
 const features = [
   {
@@ -41,15 +40,19 @@ export function HomeHero() {
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Button asChild size="lg" className="rounded-2xl">
-              <Link href="/translate">
-                Start translating
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="rounded-2xl">
-              <Link href="/history">View history</Link>
-            </Button>
+            <Link
+              href="/translate"
+              className="inline-flex h-14 items-center justify-center rounded-2xl bg-primary px-8 text-base font-semibold text-primary-foreground shadow-[0_18px_40px_-20px_rgba(14,165,233,0.72)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:translate-y-0 active:scale-[0.98]"
+            >
+              Start translating
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+            <Link
+              href="/dashboard"
+              className="inline-flex h-14 items-center justify-center rounded-2xl bg-sky-100 px-8 text-base font-semibold text-sky-950 shadow-[0_16px_36px_-22px_rgba(14,165,233,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-sky-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:translate-y-0 active:scale-[0.98] dark:bg-sky-500/18 dark:text-sky-100 dark:hover:bg-sky-500/28"
+            >
+              View dashboard
+            </Link>
           </div>
         </div>
 
