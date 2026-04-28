@@ -474,8 +474,8 @@ export default function SettingsPage() {
         <div className="space-y-8">
           <div className="rounded-[2rem] border border-primary/15 bg-primary/6 p-6">
             <p className="text-base font-semibold leading-8 text-foreground">
-              Real Meta API integration will be added later. For now, you can
-              connect a demo account to preview the Zidup experience.
+              Real Meta API integration will be added later. For now, connect a
+              demo account to preview Zidup.
             </p>
           </div>
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { DashboardLayout } from "@/components/layout/DashboardLayout"
 import { GlassCard } from "@/components/ui/GlassCard"
 import { MetricCard, DashboardWidget } from "@/components/ui/Cards"
@@ -25,23 +25,34 @@ import {
 import { Button } from "@/components/ui/Button"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
-
-const metrics = [
-  { label: "Total Reach", value: "24.8K", change: "+15.2%", trend: 'up' as const, icon: Eye },
-  { label: "Engagement Rate", value: "6.4%", change: "+2.1%", trend: 'up' as const, icon: BarChart3 },
-  { label: "Messages", value: "143", change: "+12", trend: 'up' as const, icon: MessageCircle },
-  { label: "Campaign Spend", value: "540 MAD", change: "-5%", trend: 'down' as const, icon: Wallet },
-]
-
-const recentPosts = [
-  { title: "Summer Special Offer", platform: "Instagram", type: "Reel", reach: "4.2K", engagement: "8.5%", status: "High" },
-  { title: "Client Testimonial #4", platform: "Facebook", type: "Post", reach: "1.8K", engagement: "4.2%", status: "Medium" },
-  { title: "Behind the Scenes", platform: "Instagram", type: "Story", reach: "950", engagement: "12.1%", status: "Viral" },
-  { title: "Our New Menu", platform: "Both", type: "Carousel", reach: "3.1K", engagement: "6.8%", status: "High" },
-]
+import { storageService } from "@/services/storageService"
 
 export default function AnalyticsPage() {
   const [dateRange, setDateRange] = useState('7d')
+  const [analytics, setAnalytics] = useState<any>(null)
+
+  useEffect(() => {
+    storageService.ensureDemoData()
+    setAnalytics(storageService.getAnalytics())
+  }, [])
+
+  const metrics = (analytics?.metrics || [
+    { label: "Total Reach", value: "24.8K", change: "+15.2%", trend: 'up' as const },
+    { label: "Engagement Rate", value: "6.4%", change: "+2.1%", trend: 'up' as const },
+    { label: "Messages", value: "143", change: "+12", trend: 'up' as const },
+    { label: "Campaign Spend", value: "540 MAD", change: "-5%", trend: 'down' as const },
+  ]).map((metric: any, index: number) => ({
+    ...metric,
+    icon: [Eye, BarChart3, MessageCircle, Wallet][index] || Eye,
+    trend: metric.trend as 'up' | 'down',
+  }))
+
+  const recentPosts = analytics?.recentPosts || [
+    { title: "Summer Special Offer", platform: "Instagram", type: "Reel", reach: "4.2K", engagement: "8.5%", status: "High" },
+    { title: "Client Testimonial #4", platform: "Facebook", type: "Post", reach: "1.8K", engagement: "4.2%", status: "Medium" },
+    { title: "Behind the Scenes", platform: "Instagram", type: "Story", reach: "950", engagement: "12.1%", status: "Viral" },
+    { title: "Our New Menu", platform: "Both", type: "Carousel", reach: "3.1K", engagement: "6.8%", status: "High" },
+  ]
 
   return (
     <DashboardLayout>
@@ -66,7 +77,7 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        {metrics.map((m, i) => (
+        {metrics.map((m: { label: string; value: string; change: string; trend: 'up' | 'down'; icon: typeof Eye }, i: number) => (
           <MetricCard key={i} {...m} />
         ))}
       </div>
@@ -149,7 +160,7 @@ export default function AnalyticsPage() {
                        </tr>
                     </thead>
                     <tbody className="divide-y divide-border/30">
-                       {recentPosts.map((post, i) => (
+                       {recentPosts.map((post: { title: string; platform: string; type: string; reach: string; engagement: string; status: string }, i: number) => (
                          <tr key={i} className="group hover:bg-muted/30 transition-all duration-300">
                             <td className="py-6 font-black text-sm tracking-tight">{post.title}</td>
                             <td className="py-6">

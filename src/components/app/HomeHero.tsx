@@ -51,7 +51,7 @@ export function HomeHero() {
               href="/dashboard"
               className="inline-flex h-14 items-center justify-center rounded-2xl bg-sky-100 px-8 text-base font-semibold text-sky-950 shadow-[0_16px_36px_-22px_rgba(14,165,233,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-sky-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:translate-y-0 active:scale-[0.98] dark:bg-sky-500/18 dark:text-sky-100 dark:hover:bg-sky-500/28"
             >
-              View dashboard
+              Open Demo Dashboard
             </Link>
           </div>
         </div>

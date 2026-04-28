@@ -22,6 +22,7 @@ import { GlassCard } from "@/components/ui/GlassCard"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { useState, useEffect } from "react"
 import { authService } from "@/services/authService"
+import { storageService } from "@/services/storageService"
 import { motion, AnimatePresence } from "framer-motion"
 
 const menuItems = [
@@ -39,8 +40,18 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [userName, setUserName] = useState("Said Ben")
+  const [businessName, setBusinessName] = useState("Atlas Cafe")
+  const [planName, setPlanName] = useState("Pro Member")
 
   useEffect(() => {
+    const user = authService.ensureDemoSession()
+    const business = storageService.getBusiness()
+
+    setUserName(user?.fullName || "Said Ben")
+    setBusinessName(business?.businessName || user?.businessName || "Atlas Cafe")
+    setPlanName(user?.plan || business?.plan || "Pro Member")
+
     const handleScroll = () => setIsScrolled(window.scrollY > 10)
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
@@ -146,11 +157,16 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <div className="h-8 w-px bg-border mx-1 hidden sm:block" />
             <div className="flex items-center gap-3 glass py-1.5 pl-1.5 pr-4 rounded-2xl cursor-pointer hover:bg-card/85 transition-colors">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-primary-foreground font-black text-xs shadow-lg">
-                SB
+                {userName
+                  .split(" ")
+                  .map((part) => part[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase()}
               </div>
               <div className="text-left hidden md:block">
-                <p className="text-[10px] font-black tracking-widest leading-tight uppercase opacity-50">Atlas Cafe</p>
-                <p className="text-[10px] font-bold text-primary uppercase">Pro Member</p>
+                <p className="text-[10px] font-black tracking-widest leading-tight uppercase opacity-50">{businessName}</p>
+                <p className="text-[10px] font-bold text-primary uppercase">{planName}</p>
               </div>
             </div>
           </div>
